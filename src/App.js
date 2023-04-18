@@ -2,8 +2,9 @@ import "./App.css";
 import io from "socket.io-client";
 import { useState } from "react";
 import Chat from "./Chat.js";
+import React from "react";
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("http://localhost:3000");
 
 function App() {
   const [username, setUsername] = useState("");
@@ -12,8 +13,13 @@ function App() {
 
   const joinRoom = () => {
     if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
-      setShowChat(true);
+      try {
+        socket.emit("join_room", room);
+        setShowChat(true);
+      } catch (error) {
+        console.error(error);
+        // Handle the error here - e.g. show a message to the user
+      }
     }
   };
 
@@ -24,7 +30,7 @@ function App() {
           <h3>Join A Chat</h3>
           <input
             type="text"
-            placeholder="John..."
+            placeholder="Enter your name..."
             onChange={(event) => {
               setUsername(event.target.value);
             }}

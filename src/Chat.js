@@ -7,7 +7,11 @@ function Chat({ socket, username, room }) {
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
+      // Create a unique ID for each message using the current timestamp
+      const messageId = Date.now().toString();
+      
       const messageData = {
+        id: messageId, // Add the message ID to the message data object
         room: room,
         author: username,
         message: currentMessage,
@@ -24,6 +28,7 @@ function Chat({ socket, username, room }) {
   };
 
   useEffect(() => {
+    // Listen for incoming messages on the client-side with the correct name
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
     });
@@ -39,8 +44,9 @@ function Chat({ socket, username, room }) {
           {messageList.map((messageContent) => {
             return (
               <div
-                className="message"
-                id={username === messageContent.author ? "you" : "other"}
+                className={`message ${username === messageContent.author ? "you" : "other"}`}
+                // Use the message ID as the key for each message
+                key={messageContent.id}
               >
                 <div>
                   <div className="message-content">
